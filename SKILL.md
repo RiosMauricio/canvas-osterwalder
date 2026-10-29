@@ -41,7 +41,7 @@ Leé la guía correspondiente **antes** de escribir.
 5. **Cómo funciona.** Con todo lo anterior, escribí la explicación en lenguaje natural (ver `references/como-funciona.md`). Si hay código, verificá cada afirmación contra el código y separá lo real de lo de demostración.
 6. **Hipótesis.** Al terminar, marcá las 3–5 hipótesis más riesgosas del modelo (las que, si son falsas, lo derrumban) y proponé el experimento más barato para validar cada una (ver la sección "Validar" de `references/business-model-canvas.md`).
 7. **Coherencia.** Verificá con el checklist de abajo antes de entregar.
-8. **Versión visual.** Al terminar, ofrecé (no generes sin preguntar) una versión visual de lo que se escribió: **HTML**, **PDF** o **diapositivas**, uno o varios. Si el usuario acepta, seguí `references/version-visual.md`. Si el usuario pide directamente "versión visual", "HTML", "PDF" o "slides" del canvas, generala a partir de los `.md` existentes sin rehacer el contenido.
+8. **Versión visual.** Al terminar, ofrecé (no generes sin preguntar) una versión visual de lo que se escribió: **HTML**, **PDF** o **diapositivas**, uno o varios. Si el usuario acepta, seguí `references/version-visual.md` y partí **siempre** de `assets/plantilla-documento.html` (no dibujes el canvas desde cero); no entregues sin que su chequeo diga `ok`. Si el usuario pide directamente "versión visual", "HTML", "PDF" o "slides" del canvas, generala a partir de los `.md` existentes sin rehacer el contenido.
 
 ## Dónde guardar los resultados
 

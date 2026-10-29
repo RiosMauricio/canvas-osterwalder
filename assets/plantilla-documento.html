@@ -1,0 +1,998 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{producto}} · Modelo de negocio</title>
+<!--
+  PLANTILLA de la skill canvas-osterwalder (references/version-visual.md).
+  - Copiá este archivo a docs/negocio/visual/canvas.html y completá los {{…}}.
+  - NO cambies el CSS del círculo (bloque "Círculo del perfil del cliente") ni
+    las posiciones de las zonas: están probados. Si un texto no entra,
+    acortá el texto; el ajuste automático achica la letra de esa zona hasta
+    un mínimo y el chequeo avisa si igual no entra.
+  - Máximo 4 post-its por zona. Para más segmentos, duplicá la <section> del
+    VPC. Las demás hojas (cómo funciona, caso de uso, beneficios, competencia,
+    hipótesis) usan las clases que ya están en el CSS: .hu, .roles,
+    .recorrido, .linea, .hu-bandas/.banda, .ben, table, .declaracion, .nota.
+  - Antes de entregar: abrir con Chrome headless con --dump-dom y leer el
+    atributo data-chequeo de <html>: tiene que decir "ok".
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700&family=Saira+Semi+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --papel: #f8f6f1;
+    --ficha: #ffffff;
+    --tinta: #29241c;
+    --piedra: #6f675b;
+    --linea: #e7e2d6;
+    --senal: #f5b301;
+    --cobre: #a8662f;
+    --oscuro: #1c1915;
+    --m: #a8662f;            /* Segmento A */
+    --m-fondo: #f2d2a3;
+    --m-borde: #dda96f;
+    --p: #2f6f68;            /* Segmento B */
+    --p-fondo: #a9dcd0;
+    --p-borde: #6cb8ab;
+    --n-fondo: #efece3;      /* neutro: trabajos y productos */
+    --n-borde: #ddd6c7;
+    --n-borde-izq: #a39a88;
+    --senal-fondo: #fdf3d3;
+    --grano: #eae5d9;
+    /* Familia dolor: dolores + aliviadores (terracota suave) */
+    --d: #bd6147;
+    --d-fondo: #f3d9d1;
+    --d-borde: #e0ac9f;
+    --d-zona: #f8ebe6;
+    --d-deep: #9c4534;
+    --d-cod: #a84f38;
+    /* Familia alegría: alegrías + creadores (verde suave) */
+    --a: #4e8f66;
+    --a-fondo: #d9edde;
+    --a-borde: #a6cfB4;
+    --a-zona: #ecf5ee;
+    --a-deep: #35704c;
+    --a-cod: #3e7d57;
+    --t-zona: #f3f0e8;
+    --cod-tx: #ffffff;
+    --sans: "Saira", "Helvetica Neue", Arial, sans-serif;
+    --cond: "Saira Semi Condensed", "Arial Narrow", "Saira", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --papel: #14110d;
+      --ficha: #211d18;
+      --tinta: #eee8dd;
+      --piedra: #afa694;
+      --linea: #3a342b;
+      --senal: #f5b301;
+      --cobre: #e0a36b;
+      --m: #e0a36b;
+      --m-fondo: #4a3319;
+      --m-borde: #8a6132;
+      --p: #7cc4ba;
+      --p-fondo: #1a4038;
+      --p-borde: #386a60;
+      --n-fondo: #2c2720;
+      --n-borde: #494336;
+      --n-borde-izq: #8b8270;
+      --senal-fondo: #3a2f12;
+      --grano: #262119;
+      --d: #e08a6f;
+      --d-fondo: #47271f;
+      --d-borde: #7d4a3c;
+      --d-zona: #291b15;
+      --d-deep: #eda587;
+      --d-cod: #cf7a5e;
+      --a: #7cc496;
+      --a-fondo: #1e3d2a;
+      --a-borde: #3d6b4d;
+      --a-zona: #172a1e;
+      --a-deep: #9fd8b3;
+      --a-cod: #5f9d77;
+      --t-zona: #1d1913;
+      --cod-tx: #1c1915;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background-color: var(--papel);
+    background-image: radial-gradient(var(--grano) 1.1px, transparent 1.1px);
+    background-size: 24px 24px;
+    color: var(--tinta);
+    font: 14px/1.45 var(--sans);
+  }
+  main { max-width: 1240px; margin: 0 auto; padding: 30px 22px 70px; display: grid; gap: 30px; }
+
+  /* ---------- Hojas (una por sección, una por página impresa) ---------- */
+  .hoja {
+    position: relative;
+    background: var(--ficha);
+    border: 1px solid var(--linea);
+    border-radius: 18px;
+    padding: 26px 30px 30px;
+    overflow: hidden;
+    box-shadow: 0 30px 70px -38px rgba(41, 36, 28, .35);
+  }
+  .hoja::before {
+    content: "";
+    position: absolute; inset: 0 0 auto 0; height: 5px;
+    background: linear-gradient(90deg, var(--senal), var(--cobre));
+  }
+  section.vpc-m::before { background: linear-gradient(90deg, var(--senal), var(--m)); }
+  section.vpc-p::before { background: linear-gradient(90deg, var(--senal), var(--p)); }
+  .hoja-tit {
+    display: flex; align-items: center; gap: 11px;
+    margin: 0 0 15px;
+    font: 700 20px/1.1 var(--cond);
+    letter-spacing: .4px;
+  }
+  .hoja-tit .seg { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+  .seg.m { background: var(--m); }
+  .seg.p { background: var(--p); }
+  .hoja-tit .pg {
+    margin-left: auto;
+    font: 600 11px var(--sans); letter-spacing: .4px;
+    color: var(--piedra); border: 1px solid var(--linea);
+    border-radius: 999px; padding: 3px 11px; white-space: nowrap;
+  }
+
+  /* ---------- Encabezado ---------- */
+  .cabecera {
+    display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 26px;
+    padding-bottom: 18px; margin-bottom: 20px;
+    border-bottom: 1px solid var(--linea);
+  }
+  h1 {
+    margin: 0;
+    font: 800 clamp(26px, 3.4vw, 36px)/1 var(--cond);
+    letter-spacing: -.5px;
+  }
+  h1 em { font-style: normal; color: var(--cobre); }
+  h1 .rest { font-weight: 500; color: var(--piedra); }
+  .sub { margin: 7px 0 0; color: var(--piedra); font-size: 13.5px; }
+  .sub time { color: var(--tinta); font-weight: 600; }
+  .tag-innoa {
+    margin-left: auto;
+    font-size: 12.5px; color: var(--tinta); white-space: nowrap;
+    border: 1px solid var(--linea); background: var(--papel);
+    border-radius: 999px; padding: 5px 14px;
+  }
+  .leyenda { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 0; padding: 0; list-style: none; }
+  .leyenda li {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 12px; color: var(--tinta);
+    border: 1px solid var(--linea); background: var(--papel);
+    border-radius: 999px; padding: 3.5px 12px;
+  }
+  .leyenda li.grupo { border: 0; background: transparent; padding: 3.5px 0; font-size: 11px; font-weight: 600; color: var(--piedra); letter-spacing: .4px; }
+  .leyenda .lg { width: 11px; height: 11px; border-radius: 3px; flex: none; }
+  .leyenda .leyenda-txt { color: var(--piedra); }
+
+  /* ---------- Post-its ---------- */
+  ul.post { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  ul.post li {
+    font-size: 12px; line-height: 1.32;
+    padding: 4px 8px 4px 9px;
+    background: var(--n-fondo);
+    border: 1px solid var(--n-borde);
+    border-left: 3px solid var(--n-borde-izq);
+    border-radius: 2px 6px 6px 2px;
+    box-shadow: 0 1px 2px rgba(41, 36, 28, .08);
+  }
+  ul.post li:nth-child(3n+1) { transform: rotate(-.4deg); }
+  ul.post li:nth-child(3n+2) { transform: rotate(.3deg); }
+  ul.post li.m { background: var(--m-fondo); border-color: var(--m-borde); border-left-color: var(--m); }
+  ul.post li.p { background: var(--p-fondo); border-color: var(--p-borde); border-left-color: var(--p); }
+  /* color por tipo de zona (hojas 1 y 2) */
+  ul.post li.d { background: var(--d-fondo); border-color: var(--d-borde); border-left-color: var(--d); }
+  ul.post li.a { background: var(--a-fondo); border-color: var(--a-borde); border-left-color: var(--a); }
+  ul.post li.hueco { background: transparent; border-style: dashed; box-shadow: none; }
+  .tag {
+    margin-left: 4px; font-size: 9.5px; font-weight: 600; white-space: nowrap;
+    color: var(--piedra); border: 1px solid var(--n-borde);
+    background: rgba(255, 255, 255, .45); border-radius: 99px; padding: 0 6px;
+  }
+  .road {
+    margin-left: 4px; font-size: 9.5px; font-weight: 700; white-space: nowrap;
+    color: #29241c; background: var(--senal); border-radius: 3px; padding: 1px 5px;
+  }
+  .sup { font-style: italic; color: var(--piedra); font-size: 11px; white-space: nowrap; }
+
+  /* post-its del VPC: texto + chips de código y de encaje */
+  .vpc ul.post li { display: flex; align-items: baseline; flex-wrap: wrap; gap: 1px 6px; font-size: 13px; line-height: 1.35; padding: 6px 9px 6px 10px; }
+  .vpc ul.post li .tx { flex: 1 1 14ch; }
+  .cod {
+    flex: none; align-self: center;
+    font: 700 9.5px/1.7 var(--cond); letter-spacing: .4px;
+    border-radius: 99px; padding: 0 7px;
+    background: var(--n-borde-izq); color: var(--cod-tx);
+  }
+  li.d > .cod { background: var(--d-cod); }
+  li.a > .cod { background: var(--a-cod); }
+  .fit {
+    flex: none; align-self: center;
+    font: 600 9.5px/1.7 var(--cond); letter-spacing: .3px; white-space: nowrap;
+    border-radius: 99px; padding: 0 7px;
+    color: var(--piedra); border: 1px solid var(--n-borde); background: rgba(255, 255, 255, .4);
+  }
+  .fit.d { color: var(--d-deep); border-color: var(--d-borde); }
+  .fit.a { color: var(--a-deep); border-color: var(--a-borde); }
+  .hueco-tag {
+    flex: none; align-self: center;
+    font: 700 8.5px/1.7 var(--cond); letter-spacing: .7px; text-transform: uppercase; white-space: nowrap;
+    color: var(--piedra); border: 1px dashed var(--piedra); border-radius: 99px; padding: 0 7px;
+  }
+
+  /* ---------- Value Proposition Canvas ---------- */
+  .vpc-titulos { display: grid; grid-template-columns: .9fr 40px 1.14fr; margin: 0 0 9px; }
+  .vpc-titulos span {
+    font: 700 12px var(--cond); letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--piedra); text-align: center;
+  }
+  .paso {
+    display: inline-grid; place-items: center; width: 17px; height: 17px; margin-right: 6px;
+    border-radius: 50%; background: var(--senal); color: var(--oscuro);
+    font: 700 10.5px var(--cond); letter-spacing: 0; vertical-align: 1px;
+  }
+  .vpc-titulos span:last-child { color: var(--tinta); }
+  .como-leer {
+    list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px;
+    margin: 0 0 12px; padding: 7px 12px; font-size: 12px; color: var(--tinta);
+    background: var(--papel); border: 1px solid var(--linea); border-radius: 10px;
+  }
+  .como-leer .t { font: 700 11px var(--cond); letter-spacing: 1px; text-transform: uppercase; color: var(--piedra); }
+  .como-leer .fit { font-size: 9px; }
+  .vpc { display: grid; grid-template-columns: .9fr 40px 1.14fr; align-items: stretch; }
+  .encaje { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+  .encaje::before {
+    content: ""; position: absolute; top: 9%; bottom: 9%; left: 50%;
+    border-left: 2px dashed var(--linea);
+  }
+  .encaje b {
+    position: relative; width: 34px; height: 34px; flex: none;
+    display: grid; place-items: center;
+    background: var(--ficha); border: 1.5px solid var(--cobre); border-radius: 50%;
+    color: var(--cobre);
+  }
+  .encaje b svg { width: 16px; height: 16px; }
+  .encaje small { position: relative; font: 600 9px var(--cond); letter-spacing: 1px; text-transform: uppercase; color: var(--piedra); background: var(--ficha); padding: 0 2px; }
+
+  .cuadrado, .circulo { background: var(--papel); border: 2px solid var(--tinta); }
+  .cuadrado {
+    border-radius: 14px; overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "prod crea" "prod alivia";
+  }
+  .cuadrado > div { padding: 13px 14px; }
+  .cuadrado .prod { grid-area: prod; border-right: 1px solid var(--piedra); background: var(--t-zona); }
+  .cuadrado .crea { grid-area: crea; border-bottom: 1px solid var(--piedra); background: var(--a-zona); }
+  .cuadrado .alivia { grid-area: alivia; background: var(--d-zona); }
+
+  /* círculo: tres sectores con la geometría del lienzo original */
+  .circulo {
+    position: relative; align-self: center;
+    width: 100%; aspect-ratio: 1 / 1;
+    border-radius: 50%; overflow: hidden;
+  }
+  .sectores { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .sectores .sec-t { fill: var(--t-zona); }
+  .sectores .sec-a { fill: var(--a-zona); }
+  .sectores .sec-d { fill: var(--d-zona); }
+  .sectores line { stroke: var(--piedra); stroke-width: .55; }
+  .circulo .zona { position: absolute; display: flex; flex-direction: column; justify-content: center; }
+  .circulo .zona ul { width: 100%; }
+  /* etiqueta de cada sector en la punta, junto a la unión central */
+  .circulo .zona h3 { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; }
+  .circulo .z-trabajo h3 { position: static; transform: none; justify-content: center; }
+  .z-alegria h3 { left: 80%; top: -11%; }
+  .z-dolor h3 { left: 80%; top: 107%; }
+  .circulo ul.post { gap: 5px; }
+  .circulo ul.post li { display: block; font-size: 12px; padding: 4px 8px 4px 9px; }
+  .circulo ul.post li .tx { display: inline; }
+  .circulo .cod, .circulo .fit { font-size: 9px; padding: 0 6px; }
+  .circulo .cod { margin-right: 6px; }
+  .circulo .fit, .circulo .tag { margin-left: 4px; }
+  .circulo .hueco-tag { font-size: 8px; margin-left: 4px; }
+  .z-trabajo { left: 62%; right: 6%; top: 27%; bottom: 27%; }
+  .z-alegria { left: 14%; right: 47.5%; top: 12%; bottom: 51%; }
+  .z-dolor   { left: 14%; right: 47.5%; top: 52%; bottom: 12%; }
+  .z-alegria, .z-dolor { align-items: center; }
+  .z-alegria ul, .z-dolor ul { width: 90%; }
+
+  .zona h3 {
+    display: flex; align-items: center; gap: 6px;
+    margin: 0 0 8px;
+    font: 700 12.5px var(--cond); letter-spacing: .9px; text-transform: uppercase;
+    color: var(--tinta);
+  }
+  .zona h3 { flex-wrap: wrap; row-gap: 0; }
+  .zona h3 .of { flex-basis: 100%; padding-left: 20px; font: italic 500 10.5px var(--cond); letter-spacing: .3px; text-transform: none; color: var(--piedra); }
+  .circulo .zona h3 { justify-content: center; text-align: center; }
+  .circulo .zona h3 .of { padding-left: 0; }
+  .z-alegria h3 svg, .z-dolor h3 svg { display: none; }
+  .circulo .z-trabajo h3 { white-space: normal; }
+  .zona h3 svg { width: 14px; height: 14px; color: var(--piedra); flex: none; }
+  .zona.alivia h3 svg, .z-dolor h3 svg { color: var(--d-deep); }
+  .zona.crea h3 svg, .z-alegria h3 svg { color: var(--a-deep); }
+
+  /* Hoja 1: caso de uso */
+  .hu {
+    display: flex; gap: 12px; margin: 0 0 22px; padding: 12px 16px; font-size: 14px; line-height: 1.5;
+    background: var(--papel); border: 1px solid var(--linea); border-left: 4px solid var(--senal); border-radius: 10px;
+  }
+  .linea { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; counter-reset: paso; }
+  .linea li {
+    position: relative; counter-increment: paso; display: flex; flex-direction: column; gap: 6px;
+    padding: 24px 14px 14px; background: var(--ficha); border: 1px solid var(--linea); border-radius: 12px; font-size: 13px; line-height: 1.45;
+  }
+  .linea li::before {
+    content: counter(paso); position: absolute; top: -12px; left: 14px;
+    display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%;
+    background: var(--senal); color: var(--oscuro); font: 700 13px var(--cond);
+  }
+  .linea li + li::after { content: ""; position: absolute; top: 50%; left: -14px; width: 14px; border-top: 2px dashed var(--piedra); }
+  .linea p { margin: 0; }
+  .linea h3 { margin: 0; font: 700 15px var(--cond); color: var(--tinta); }
+  .linea .cuando { font: 700 11px var(--cond); letter-spacing: 1px; text-transform: uppercase; color: var(--cobre); }
+  .linea .quien { font-size: 11.5px; color: var(--piedra); }
+  .linea .cita { font-style: italic; }
+  .linea .chips { margin-top: auto; display: flex; flex-wrap: wrap; gap: 4px; padding-top: 4px; }
+  .linea .chips .fit { margin: 0; }
+  .hu-bandas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+  .banda { margin: 0; padding: 9px 12px; border-radius: 10px; font-size: 12.5px; border: 1px solid var(--linea); background: var(--papel); }
+  .banda b { display: block; font: 700 11px var(--cond); letter-spacing: .8px; text-transform: uppercase; margin-bottom: 2px; }
+  .banda.ok { background: var(--a-fondo); border-color: var(--a-borde); }
+  .banda.ok b { color: var(--a-deep); }
+  .banda.no { background: var(--d-fondo); border-color: var(--d-borde); }
+  .banda.no b { color: var(--d-deep); }
+  .banda .road { margin-left: 4px; }
+  /* Hoja 2: beneficios */
+  .ben-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .ben-col h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; font: 700 13px var(--cond); letter-spacing: .9px; text-transform: uppercase; color: var(--tinta); }
+  .ben-col h3 .seg { width: 10px; height: 10px; border-radius: 3px; }
+  .ben-nota { font: italic 500 11px var(--cond); letter-spacing: 0; text-transform: none; color: var(--piedra); }
+  .ben { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+  .ben li { position: relative; padding: 8px 12px 8px 12px; padding-right: 92px; font-size: 12.5px; line-height: 1.4; background: var(--m-fondo); border: 1px solid var(--linea); border-left: 4px solid var(--m); border-radius: 8px; }
+  .ben li.p { background: var(--p-fondo); border-left-color: var(--p); }
+  .ben li b { display: block; font-size: 13px; }
+  .ben li > .fit { position: absolute; right: 10px; top: 9px; margin: 0; }
+  .ab-tit { margin-top: 18px !important; }
+  table.ab { width: 100%; font-size: 12px; }
+  table.ab td:last-child { font-weight: 600; }
+  /* Hoja 1: cómo funciona */
+  .roles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+  .rol { padding: 12px 14px; font-size: 13px; line-height: 1.45; background: var(--papel); border: 1px solid var(--linea); border-radius: 10px; }
+  .rol.m { background: var(--m-fondo); border-color: var(--m); }
+  .rol.p { background: var(--p-fondo); border-color: var(--p); }
+  .rol b { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; font: 700 13px var(--cond); letter-spacing: .8px; text-transform: uppercase; }
+  .rol .seg { width: 10px; height: 10px; border-radius: 3px; }
+  .rec-tit { margin: 0 0 10px; font: 700 13px var(--cond); letter-spacing: .9px; text-transform: uppercase; color: var(--piedra); }
+  .recorrido { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; counter-reset: rec; }
+  .recorrido li { position: relative; counter-increment: rec; padding: 22px 10px 10px; font-size: 12px; line-height: 1.4; background: var(--ficha); border: 1px solid var(--linea); border-radius: 10px; }
+  .recorrido li::before { content: counter(rec); position: absolute; top: -11px; left: 10px; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--senal); color: var(--oscuro); font: 700 12px var(--cond); }
+  .recorrido li b { display: block; font: 700 13px var(--cond); color: var(--tinta); margin-bottom: 2px; }
+  .hu-bandas.dos { grid-template-columns: repeat(2, 1fr); }
+  .declaracion {
+    display: flex; gap: 12px; align-items: flex-start;
+    margin-top: 16px; padding: 12px 16px;
+    background: var(--papel); border: 1px solid var(--linea); border-left: 4px solid var(--senal);
+    border-radius: 10px;
+    font: 500 15px/1.45 var(--cond); letter-spacing: .1px;
+  }
+  .declaracion svg { flex: none; width: 20px; height: 20px; color: var(--cobre); margin-top: 1px; }
+  .nota { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; font-size: 12px; color: var(--piedra); }
+  .nota svg { flex: none; width: 15px; height: 15px; margin-top: 1px; }
+  .nota b { color: var(--tinta); font-weight: 600; }
+  .nota .fit { font-size: 9px; }
+
+  /* ---------- Business Model Canvas ---------- */
+  .bmc {
+    display: grid; gap: 1px;
+    background: var(--linea);
+    border: 2px solid var(--tinta); border-radius: 14px; overflow: hidden;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-areas:
+      "soc soc act act val val rel rel seg seg"
+      "soc soc rec rec val val can can seg seg"
+      "cos cos cos cos cos ing ing ing ing ing";
+  }
+  .bmc > div { background: var(--ficha); padding: 11px 13px; }
+  .bmc .soc { grid-area: soc; } .bmc .act { grid-area: act; } .bmc .rec { grid-area: rec; }
+  .bmc .val { grid-area: val; background: var(--senal-fondo); }
+  .bmc .rel { grid-area: rel; } .bmc .can { grid-area: can; }
+  .bmc .seg-b { grid-area: seg; } .bmc .cos { grid-area: cos; } .bmc .ing { grid-area: ing; }
+  .bmc h3 {
+    display: flex; align-items: center; gap: 7px;
+    margin: 0 0 8px;
+    font: 700 11.5px var(--cond); letter-spacing: .7px; text-transform: uppercase;
+    color: var(--tinta);
+  }
+  .bmc h3 .num {
+    flex: none; width: 19px; height: 19px; border-radius: 6px;
+    display: grid; place-items: center;
+    background: var(--tinta); color: var(--senal);
+    font: 700 11.5px var(--cond);
+  }
+  .bmc h3 svg { width: 15px; height: 15px; color: var(--piedra); margin-left: auto; flex: none; }
+
+  /* ---------- Hipótesis ---------- */
+  .tabla-scroll { overflow-x: auto; }
+  table {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    background: var(--ficha);
+    border: 2px solid var(--tinta); border-radius: 12px; overflow: hidden;
+    font-size: 12.5px;
+  }
+  th {
+    text-align: left; padding: 8px 12px;
+    font: 700 11px var(--cond); letter-spacing: .8px; text-transform: uppercase;
+    color: var(--piedra); background: var(--papel);
+    border-bottom: 1.5px solid var(--tinta);
+  }
+  td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--linea); line-height: 1.35; }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.h { font: 800 13px var(--cond); color: var(--cobre); white-space: nowrap; }
+  .tipo {
+    display: inline-flex; align-items: center; white-space: nowrap;
+    font-size: 11px; color: var(--tinta);
+    border: 1px solid var(--linea); background: var(--papel);
+    border-radius: 999px; padding: 1px 9px;
+  }
+  .tipo::before { content: ""; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; background: var(--piedra); }
+  .tipo.d::before { background: var(--senal); }
+  .tipo.v::before { background: var(--cobre); }
+  .tipo.f::before { background: var(--tinta); }
+
+  /* ---------- Pie ---------- */
+  .pie {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px;
+    margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--linea);
+    font-size: 11.5px; color: var(--piedra);
+  }
+
+  /* ---------- Responsive ---------- */
+  @media screen and (max-width: 960px) {
+    .recorrido { grid-template-columns: repeat(2, 1fr); gap: 16px 10px; }
+    .roles { grid-template-columns: 1fr; }
+    .linea { grid-template-columns: repeat(2, 1fr); gap: 20px 14px; }
+    .linea li + li::after { display: none; }
+    .vpc, .vpc-titulos { grid-template-columns: 1fr; }
+    .vpc-titulos { display: none; }
+    .circulo { order: -2; }
+    .encaje { order: -1; }
+    .vpc { gap: 16px; }
+    .encaje { flex-direction: row; height: 40px; }
+    .encaje::before { top: 50%; bottom: auto; left: 6%; right: 6%; border-left: 0; border-top: 2px dashed var(--linea); }
+    .circulo { aspect-ratio: auto; border-radius: 26px; }
+    .circulo .sectores { display: none; }
+    .circulo .zona { position: static; padding: 14px 16px; }
+    .circulo .zona + .zona { border-top: 1px solid var(--linea); }
+    .circulo .zona h3 { position: static; transform: none; justify-content: flex-start; text-align: left; }
+    .circulo .zona h3 .of { padding-left: 20px; }
+    .z-alegria h3 svg, .z-dolor h3 svg { display: block; }
+    .z-trabajo { background: var(--t-zona); }
+    .z-dolor { background: var(--d-zona); }
+    .z-alegria { background: var(--a-zona); }
+    .z-alegria ul, .z-dolor ul { width: 100%; }
+    .z-alegria, .z-dolor { align-items: stretch; }
+  }
+  @media screen and (max-width: 760px) {
+    .recorrido, .hu-bandas.dos { grid-template-columns: 1fr; }
+    .ben-grid { grid-template-columns: 1fr; }
+    .ben li { padding-right: 12px; }
+    .ben li > .fit { position: static; display: inline-block; margin-top: 4px; }
+    .linea, .hu-bandas { grid-template-columns: 1fr; }
+    .linea { gap: 20px; }
+    .hu { font-size: 13px; }
+    body { font-size: 13px; }
+    main { padding: 14px 10px 44px; gap: 16px; }
+    .hoja { padding: 18px 14px 20px; border-radius: 14px; }
+    .hoja-tit { font-size: 17px; }
+    .cabecera { padding-bottom: 14px; margin-bottom: 16px; }
+    .tag-innoa { margin-left: 0; }
+    .cuadrado { grid-template-columns: 1fr; grid-template-areas: "prod" "alivia" "crea"; }
+    .cuadrado .prod { border-right: 0; border-bottom: 1px solid var(--piedra); }
+    .cuadrado .crea { border-bottom: 0; }
+    .cuadrado .alivia { border-bottom: 1px solid var(--piedra); }
+    .bmc { grid-template-columns: 1fr; grid-template-areas: "seg" "val" "can" "rel" "act" "rec" "soc" "cos" "ing"; }
+    ul.post li { font-size: 11.5px; }
+    .vpc ul.post li { font-size: 12.5px; }
+    /* tabla → tarjetas */
+    .tabla-scroll { overflow-x: visible; }
+    table, thead, tbody, tr, td { display: block; }
+    table { border: 0; background: transparent; }
+    thead { display: none; }
+    tbody tr {
+      background: var(--ficha); border: 1px solid var(--linea);
+      border-radius: 12px; margin-bottom: 10px; padding: 10px 13px;
+    }
+    td { border: 0; padding: 3px 0; }
+    td:not(.h)::before {
+      content: attr(data-th);
+      display: block; margin-bottom: 1px;
+      font: 600 10px var(--cond); letter-spacing: .8px; text-transform: uppercase;
+      color: var(--piedra);
+    }
+    td.h { padding-bottom: 6px; }
+  }
+
+  /* ---------- Impresión: A4 apaisada, 4 hojas ---------- */
+  @page { size: A4 landscape; margin: 10mm; }
+  @media print {
+    :root {
+      --papel: #ffffff; --ficha: #ffffff; --tinta: #29241c; --piedra: #6f675b;
+      --linea: #e7e2d6; --senal: #f5b301; --cobre: #a8662f;
+      --m: #a8662f; --m-fondo: #f2d2a3; --m-borde: #dda96f;
+      --p: #2f6f68; --p-fondo: #a9dcd0; --p-borde: #6cb8ab;
+      --n-fondo: #efece3; --n-borde: #ddd6c7; --n-borde-izq: #a39a88;
+      --senal-fondo: #fdf3d3; --grano: #eae5d9;
+      --d: #bd6147; --d-fondo: #f3d9d1; --d-borde: #e0ac9f;
+      --d-zona: #f8ebe6; --d-deep: #9c4534; --d-cod: #a84f38;
+      --a: #4e8f66; --a-fondo: #d9edde; --a-borde: #a6cfb4;
+      --a-zona: #ecf5ee; --a-deep: #35704c; --a-cod: #3e7d57;
+      --t-zona: #f3f0e8; --cod-tx: #ffffff;
+    }
+    body { background: #fff; font-size: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    main { display: block; max-width: none; padding: 0; }
+    .hoja { border: 0; border-radius: 0; box-shadow: none; padding: 0; margin: 0; overflow: visible; }
+    .hoja::before { display: none; }
+    section.hoja + section.hoja { break-before: page; }
+    .rol { font-size: 10.5px; padding: 9px 11px; }
+    .rol b { font-size: 10.5px; }
+    .recorrido li { font-size: 10px; padding: 18px 8px 8px; }
+    .recorrido li b { font-size: 11px; }
+    .rec-tit { font-size: 10.5px; }
+    .ben li { font-size: 10px; padding: 5px 9px; padding-right: 80px; }
+    .ben li b { font-size: 10.5px; }
+    .ben li > .fit { font-size: 8px; top: 6px; }
+    .ben-col h3 { font-size: 11px; margin-bottom: 7px; }
+    table.ab { font-size: 9.5px; }
+    .ab-tit { margin-top: 12px !important; }
+    .hu { font-size: 11.5px; padding: 9px 14px; margin-bottom: 20px; }
+    .linea { gap: 14px; }
+    .linea li { font-size: 11px; padding: 20px 12px 12px; }
+    .linea h3 { font-size: 13px; }
+    .linea .cuando { font-size: 9.5px; }
+    .linea .quien { font-size: 10px; }
+    .linea .chips .fit { font-size: 8.5px; }
+    .banda { font-size: 10.5px; padding: 8px 11px; }
+    .banda b { font-size: 9px; }
+    .cabecera { gap: 6px 18px; padding-bottom: 8px; margin-bottom: 10px; }
+    h1 { font-size: 19px; }
+    .sub { font-size: 9.5px; margin-top: 3px; }
+    .tag-innoa { font-size: 9px; padding: 2px 10px; }
+    .leyenda { gap: 5px; margin-top: 5px; }
+    .leyenda li { font-size: 8.5px; padding: 1.5px 8px; gap: 5px; }
+    .leyenda li.grupo { font-size: 8px; padding: 1.5px 0; }
+    .leyenda .lg { width: 8px; height: 8px; }
+    .hoja-tit { font-size: 14px; margin-bottom: 8px; }
+    .hoja-tit .seg { width: 9px; height: 9px; }
+    .hoja-tit .pg { font-size: 8px; padding: 1px 8px; }
+    .vpc-titulos { margin-bottom: 4px; }
+    .vpc-titulos span { font-size: 9px; }
+    .paso { width: 13px; height: 13px; font-size: 8px; }
+    .como-leer { font-size: 9px; padding: 4px 10px; margin-bottom: 6px; gap: 4px 14px; }
+    .como-leer .t { font-size: 8.5px; }
+    .como-leer .fit { font-size: 7px; }
+    .nota .paso { width: 11px; height: 11px; font-size: 7px; margin: 0 3px 0 2px; }
+    .como-leer .t { font-size: 8.5px; }
+    .como-leer .fit { font-size: 7px; }
+    .encaje b { width: 26px; height: 26px; border-width: 1px; }
+    .encaje b svg { width: 12px; height: 12px; }
+    .encaje small { font-size: 7px; }
+    .cuadrado > div { padding: 8px 10px; }
+    .circulo { width: auto; height: 115mm; margin: 0 auto; }
+    .zona h3 { font-size: 10px; margin-bottom: 5px; }
+    .zona h3 svg { width: 11px; height: 11px; }
+    ul.post { gap: 4px; }
+    ul.post li { font-size: 8.8px; padding: 2px 5px 2px 6px; transform: none; box-shadow: none; border-left-width: 2.5px; }
+    .vpc ul.post li { font-size: 9.6px; padding: 3px 6px 3px 7px; gap: 1px 4px; }
+    .vpc ul.post li .tx { flex-basis: 12ch; }
+    .cod, .fit { font-size: 7.3px; padding: 0 5px; }
+    .hueco-tag { font-size: 6.8px; padding: 0 5px; }
+    .tag, .road { font-size: 7px; padding: 0 4px; }
+    .sup { font-size: 7.5px; }
+    .declaracion { font-size: 10.5px; padding: 7px 12px; margin-top: 9px; gap: 8px; border-radius: 6px; }
+    .declaracion svg { width: 14px; height: 14px; }
+    .nota { font-size: 8.5px; margin-top: 6px; }
+    .nota svg { width: 11px; height: 11px; }
+    .nota .fit { font-size: 7px; }
+    .bmc > div { padding: 6px 8px; }
+    .bmc h3 { font-size: 9px; margin-bottom: 5px; }
+    .bmc h3 .num { width: 14px; height: 14px; font-size: 9px; border-radius: 4px; }
+    .bmc h3 svg { width: 11px; height: 11px; }
+    table { font-size: 10.5px; }
+    th { font-size: 9px; padding: 6px 10px; }
+    td { padding: 8px 10px; }
+    td.h { font-size: 11px; }
+    .tipo { font-size: 9px; padding: 1px 8px; }
+    .pie { font-size: 9px; margin-top: 12px; padding-top: 8px; }
+    /* las hojas 2–4 tienen menos densidad: se centran y agrandan un poco */
+    section.hoja { display: flex; flex-direction: column; }
+    section.hoja:nth-of-type(n+2) { min-height: 182mm; justify-content: center; }
+    section.hoja.bmc-h .bmc > div { padding: 8px 10px; }
+    section.hoja.bmc-h .bmc h3 { font-size: 10px; }
+    /* stacks más compactos dentro de los sectores del círculo */
+    section.hoja .circulo .zona h3 { font-size: 9px; margin-bottom: 4px; }
+    section.hoja .circulo ul.post { gap: 3px; }
+    section.hoja .circulo ul.post li { font-size: 8.6px; line-height: 1.3; padding: 3px 7px 3px 8px; }
+    section.hoja .circulo .cod, section.hoja .circulo .fit, section.hoja .circulo .tag { font-size: 6.8px; padding: 0 4px; }
+    section.hoja .circulo .hueco-tag { font-size: 6.5px; }
+  }
+
+  /* ---- Círculo del perfil del cliente: todo escala con el círculo ----
+     Las medidas internas van en cqw (% del ancho del círculo), así la
+     proporción es la misma en pantalla, en impresión y en cualquier ancho.
+     --escala la baja el ajuste automático (script al final) por zona si el
+     texto no entra. Solo aplica cuando el círculo se dibuja (no en móvil). */
+  @media print, screen and (min-width: 961px) {
+    .vpc .circulo { container-type: inline-size; }
+    html .vpc .circulo .zona { --escala: 1; }
+    html .vpc .circulo .z-trabajo { left: 63.5%; right: 8%; top: 28%; bottom: 28%; }
+    html .vpc .circulo .z-alegria { left: 11%; right: 47%; top: 11%; bottom: 51.5%; }
+    html .vpc .circulo .z-dolor   { left: 11%; right: 47%; top: 52.5%; bottom: 10%; }
+    html .vpc .circulo .z-alegria ul, html .vpc .circulo .z-dolor ul { width: 100%; }
+    /* Los títulos van dentro de su zona (no flotando afuera): así entran en
+       el ajuste y no los tapa ningún post-it. Frustraciones lleva el título
+       abajo, junto al borde inferior del círculo. */
+    html .vpc .circulo .zona h3 {
+      position: static; transform: none; flex: none;
+      align-self: center; width: fit-content; max-width: 100%;
+      justify-content: center; text-align: center;
+      font-size: 2.3cqw; margin: 0 0 1cqw; letter-spacing: .12cqw; gap: .8cqw;
+    }
+    html .vpc .circulo .z-dolor { flex-direction: column-reverse; }
+    html .vpc .circulo .z-dolor h3 { margin: 1cqw 0 0; }
+    html .vpc .circulo .zona h3 svg { width: 2.6cqw; height: 2.6cqw; }
+    /* Título en una sola línea: "LO QUE QUIERE LOGRAR · alegrías". */
+    html .vpc .circulo .zona h3 { flex-wrap: nowrap; white-space: nowrap; }
+    html .vpc .circulo .zona h3 .of { flex-basis: auto; font-size: 1.9cqw; letter-spacing: 0; }
+    html .vpc .circulo .zona h3 .of::before { content: "· "; }
+    html .vpc .circulo .z-trabajo h3 { flex-wrap: wrap; white-space: normal; }
+    html .vpc .circulo .z-trabajo h3 .of { flex-basis: 100%; }
+    html .vpc .circulo .z-trabajo h3 .of::before { content: none; }
+    html .vpc .circulo ul.post { gap: calc(.9cqw * var(--escala)); }
+    html .vpc .circulo ul.post li {
+      font-size: calc(2.25cqw * var(--escala)); line-height: 1.3;
+      padding: calc(.6cqw * var(--escala)) calc(1.3cqw * var(--escala));
+    }
+    html .vpc .circulo .cod, html .vpc .circulo .fit, html .vpc .circulo .tag {
+      font-size: calc(1.6cqw * var(--escala)); padding: 0 calc(.9cqw * var(--escala));
+    }
+    html .vpc .circulo .cod { margin-right: calc(.9cqw * var(--escala)); }
+    html .vpc .circulo .fit, html .vpc .circulo .tag, html .vpc .circulo .hueco-tag { margin-left: calc(.6cqw * var(--escala)); }
+    html .vpc .circulo .hueco-tag { font-size: calc(1.5cqw * var(--escala)); }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<section class="hoja vpc-a">
+    <header class="cabecera">
+      <div>
+        <h1>{{producto}} <span class="rest">· Modelo de negocio</span></h1>
+        <p class="sub">{{bajada de una línea}} · Método Osterwalder · <time>{{AAAA-MM-DD}}</time></p>
+      </div>
+      <div class="tag-innoa">{{contexto: evento, cliente…}}</div>
+      <ul class="leyenda">
+        <li class="grupo">Segmentos</li>
+        <li><i class="lg" style="background:var(--m-fondo);border:1.5px solid var(--m)"></i>{{Segmento A}}</li>
+        <li><i class="lg" style="background:var(--p-fondo);border:1.5px solid var(--p)"></i>{{Segmento B}}</li>
+        <li class="grupo">Zonas (hojas {{n–m}})</li>
+        <li><i class="lg" style="background:var(--d-fondo);border:1.5px solid var(--d)"></i>Lo que complica ↔ cómo lo resolvemos</li>
+        <li><i class="lg" style="background:var(--a-fondo);border:1.5px solid var(--a)"></i>Lo que quiere lograr ↔ cómo lo ayudamos</li>
+        <li><i class="lg" style="background:var(--n-fondo);border:1.5px solid var(--n-borde-izq)"></i>Lo que hace ↔ lo que ofrecemos</li>
+        <li><span class="road" style="margin-left:0">roadmap</span><span class="leyenda-txt">planificado, no existe hoy</span></li>
+        <li><span class="sup">(supuesto)</span><span class="leyenda-txt">sin evidencia todavía</span></li>
+      </ul>
+    </header>
+
+
+    <h2 class="hoja-tit"><i class="seg m"></i>Propuesta de valor · {{Segmento A}}<span class="pg">{{n}} / {{total}}</span></h2>
+    <ol class="como-leer" aria-label="Cómo leer esta hoja">
+      <li class="t">Cómo leer esta hoja</li>
+      <li><b class="paso">1</b>Empezá por el círculo: {{el cliente}}, sin nombrar el producto.</li>
+      <li><b class="paso">2</b>Buscá en el cuadrado la respuesta: el chip <span class="fit d">→ {{D?}}</span> dice a qué responde.</li>
+      <li><b class="paso">3</b>Lo que queda sin respuesta es un hueco.</li>
+    </ol>
+    <div class="vpc-titulos" aria-hidden="true"><span><b class="paso">2</b>Mapa de valor · lo que hace {{producto}}</span><span></span><span><b class="paso">1</b>Empezá acá · Perfil del cliente</span></div>
+    <div class="vpc">
+      <div class="cuadrado" role="group" aria-label="Mapa de valor">
+        <div class="prod zona">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8.5 12 3 3 8.5v7L12 21l9-5.5z"/><path d="m3.6 8.8 8.4 4.6 8.4-4.6M12 13.4V21"/></svg>Lo que ofrecemos<span class="of">productos y servicios</span></h3>
+          <ul class="post">
+            <li>{{Producto 1 · máx. 60 caracteres}}</li>
+            <li>{{Producto 2 · máx. 60 caracteres}}</li>
+            <li>{{Producto 3 · máx. 60 caracteres}}</li>
+            <li>{{Producto 4 · máx. 60 caracteres}}</li>
+          </ul>
+        </div>
+        <div class="crea zona">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>Cómo lo ayudamos a lograrlo<span class="of">creadores de alegrías</span></h3>
+          <ul class="post">
+            <li class="a"><span class="cod">CR1</span><span class="tx">{{Creador 1 · máx. 50 caracteres}}</span><span class="fit a">→ {{A?}}</span></li>
+            <li class="a"><span class="cod">CR2</span><span class="tx">{{Creador 2 · máx. 50 caracteres}}</span><span class="fit a">→ {{A?}}</span></li>
+            <li class="a"><span class="cod">CR3</span><span class="tx">{{Creador 3 · máx. 50 caracteres}}</span><span class="fit a">→ {{A?}}</span></li>
+            <li class="a"><span class="cod">CR4</span><span class="tx">{{Creador 4 · máx. 50 caracteres}}</span><span class="fit a">→ {{A?}}</span></li>
+          </ul>
+        </div>
+        <div class="alivia zona">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.5 2.8v5.7c0 4.6-3.2 7.4-7.5 8.7-4.3-1.3-7.5-4.1-7.5-8.7V5.8z"/><path d="M12 8.5v5M9.5 11h5"/></svg>Cómo se lo resolvemos<span class="of">aliviadores de frustraciones</span></h3>
+          <ul class="post">
+            <li class="d"><span class="cod">AL1</span><span class="tx">{{Aliviador 1 · máx. 50 caracteres}}</span><span class="fit d">→ {{D?}}</span></li>
+            <li class="d"><span class="cod">AL2</span><span class="tx">{{Aliviador 2 · máx. 50 caracteres}}</span><span class="fit d">→ {{D?}}</span></li>
+            <li class="d"><span class="cod">AL3</span><span class="tx">{{Aliviador 3 · máx. 50 caracteres}}</span><span class="fit d">→ {{D?}}</span><span class="fit a">→ {{A?}}</span></li>
+            <li class="d"><span class="cod">AL4</span><span class="tx">{{Aliviador 4 · máx. 50 caracteres}}</span><span class="fit d">→ {{D?}}</span><span class="fit a">→ {{A?}}</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="encaje" aria-hidden="true">
+        <b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 8.5h10l-2.8-2.8M17.5 15.5h-10l2.8 2.8"/></svg></b>
+        <small>encaje</small>
+      </div>
+      <div class="circulo" role="group" aria-label="Perfil del cliente">
+        <svg class="sectores" viewBox="0 0 100 100" aria-hidden="true">
+          <path class="sec-t" d="M50 50 L73.2 6.3 A49.5 49.5 0 0 1 73.2 93.7 Z"/>
+          <path class="sec-d" d="M50 50 L73.2 93.7 A49.5 49.5 0 0 1 0.5 50 Z"/>
+          <path class="sec-a" d="M50 50 L0.5 50 A49.5 49.5 0 0 1 73.2 6.3 Z"/>
+          <line x1="50" y1="50" x2="73.2" y2="6.3"/><line x1="50" y1="50" x2="73.2" y2="93.7"/><line x1="50" y1="50" x2="0.5" y2="50"/>
+        </svg>
+        <div class="zona z-trabajo">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-8 8L6.9 20.4a2.1 2.1 0 0 1-3-3l7-6.9a6 6 0 0 1 8-8z"/></svg>Lo que tiene que hacer<span class="of">trabajos del cliente</span></h3>
+          <ul class="post">
+            <li>{{Trabajo 1 · máx. 45 caracteres}}</li>
+            <li>{{Trabajo 2 · máx. 45 caracteres}}</li>
+            <li>{{Trabajo 3 · máx. 45 caracteres}}</li>
+            <li>{{Trabajo 4 · máx. 45 caracteres}}</li>
+          </ul>
+        </div>
+        <div class="zona z-dolor">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H13z"/></svg>Lo que le complica<span class="of">frustraciones</span></h3>
+          <ul class="post">
+            <li class="d"><span class="cod">D1</span><span class="tx">{{Frustración 1 · máx. 48 caracteres}}</span></li>
+            <li class="d"><span class="cod">D2</span><span class="tx">{{Frustración 2 · máx. 48 caracteres}}</span></li>
+            <li class="d"><span class="cod">D3</span><span class="tx">{{Frustración 3 · máx. 48 caracteres}}</span></li>
+            <li class="d"><span class="cod">D4</span><span class="tx">{{Frustración 4 · máx. 48 caracteres}}</span></li>
+          </ul>
+        </div>
+        <div class="zona z-alegria">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>Lo que quiere lograr<span class="of">alegrías</span></h3>
+          <ul class="post">
+            <li class="a"><span class="cod">A1</span><span class="tx">{{Alegría 1 · máx. 36 caracteres}}</span><span class="tag">{{requerida|esperada|deseada|inesperada}}</span></li>
+            <li class="a"><span class="cod">A2</span><span class="tx">{{Alegría 2 · máx. 36 caracteres}}</span><span class="tag">{{requerida|esperada|deseada|inesperada}}</span></li>
+            <li class="a"><span class="cod">A3</span><span class="tx">{{Alegría 3 · máx. 36 caracteres}}</span><span class="tag">{{requerida|esperada|deseada|inesperada}}</span></li>
+            <li class="a"><span class="cod">A4</span><span class="tx">{{Alegría 4 · máx. 36 caracteres}}</span><span class="tag">{{requerida|esperada|deseada|inesperada}}</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <p class="declaracion"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3"/></svg><span>{{producto}} ayuda a {{segmento}} que quiere {{trabajo}} {{reduciendo frustración}} y {{logrando alegría}}, a diferencia de {{alternativa actual}}.</span></p>
+    <p class="nota"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3.5" stroke-dasharray="3.5 3"/></svg><span>Huecos: {{frustraciones o alegrías sin respuesta, o "ninguno"}}. Nivel de encaje: {{nivel}}. <b>Lista completa en docs/negocio/propuesta-de-valor.md</b>.</span></p>
+  </section>
+
+<section class="hoja bmc-h">
+    <h2 class="hoja-tit">Business Model Canvas<span class="pg">{{n}} / {{total}}</span></h2>
+    <div class="bmc">
+      <div class="soc">
+        <h3><span class="num">8</span>Socios clave<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7-7.1l-1.2 1.1"/><path d="M14 10a5 5 0 0 0-7.1 0l-2 2a5 5 0 0 0 7 7.1l1.2-1.1"/></svg></h3>
+        <ul class="post">
+          <li>{{Socios clave 1 · máx. 60 caracteres}}</li>
+          <li>{{Socios clave 2 · máx. 60 caracteres}}</li>
+          <li>{{Socios clave 3 · máx. 60 caracteres}}</li>
+          <li>{{Socios clave 4 · máx. 60 caracteres}}</li>
+          <li class="m">{{Socios clave 5 · máx. 60 caracteres}}</li>
+        </ul>
+      </div>
+      <div class="act">
+        <h3><span class="num">7</span>Actividades clave<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/></svg></h3>
+        <ul class="post">
+          <li>{{Actividades clave 1 · máx. 60 caracteres}}</li>
+          <li>{{Actividades clave 2 · máx. 60 caracteres}}</li>
+          <li>{{Actividades clave 3 · máx. 60 caracteres}}</li>
+          <li class="m">{{Actividades clave 4 · máx. 60 caracteres}}</li>
+          <li class="p">{{Actividades clave 5 · máx. 60 caracteres}}</li>
+        </ul>
+      </div>
+      <div class="rec">
+        <h3><span class="num">6</span>Recursos clave<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="7.5" ry="3"/><path d="M4.5 5.5v13c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-13"/><path d="M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/></svg></h3>
+        <ul class="post">
+          <li>{{Recursos clave 1 · máx. 60 caracteres}}</li>
+          <li>{{Recursos clave 2 · máx. 60 caracteres}}</li>
+          <li>{{Recursos clave 3 · máx. 60 caracteres}}</li>
+          <li>{{Recursos clave 4 · máx. 60 caracteres}}</li>
+          <li>{{Recursos clave 5 · máx. 60 caracteres}}</li>
+        </ul>
+      </div>
+      <div class="val">
+        <h3><span class="num">2</span>Propuesta de valor<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5h11l4 5.7L12 21 2.5 9.2z"/><path d="M2.5 9.2h19M9.6 3.5 8 9.2l4 11.8M14.4 3.5 16 9.2l-4 11.8"/></svg></h3>
+        <ul class="post">
+          <li class="m">{{Propuesta de valor 1 · máx. 60 caracteres}}</li>
+          <li class="m">{{Propuesta de valor 2 · máx. 60 caracteres}}</li>
+          <li class="p">{{Propuesta de valor 3 · máx. 60 caracteres}}</li>
+          <li class="p">{{Propuesta de valor 4 · máx. 60 caracteres}}</li>
+        </ul>
+      </div>
+      <div class="rel">
+        <h3><span class="num">4</span>Relación con clientes<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.3S4 15.2 4 9.8C4 7 6.1 5 8.6 5c1.5 0 2.7.8 3.4 2 .7-1.2 1.9-2 3.4-2C17.9 5 20 7 20 9.8c0 5.4-8 10.5-8 10.5z"/></svg></h3>
+        <ul class="post">
+          <li class="m">{{Relación con clientes 1 · máx. 60 caracteres}}</li>
+          <li class="m">{{Relación con clientes 2 · máx. 60 caracteres}}</li>
+          <li class="m">{{Relación con clientes 3 · máx. 60 caracteres}}</li>
+          <li class="p">{{Relación con clientes 4 · máx. 60 caracteres}}</li>
+        </ul>
+      </div>
+      <div class="can">
+        <h3><span class="num">3</span>Canales<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1.8"/><path d="M8.5 8.5a5 5 0 0 0 0 7M15.5 8.5a5 5 0 0 1 0 7M5.6 5.6a9 9 0 0 0 0 12.8M18.4 5.6a9 9 0 0 1 0 12.8"/></svg></h3>
+        <ul class="post">
+          <li class="m">{{Canales 1 · máx. 60 caracteres}}</li>
+          <li class="m">{{Canales 2 · máx. 60 caracteres}}</li>
+          <li>{{Canales 3 · máx. 60 caracteres}}</li>
+          <li class="p">{{Canales 4 · máx. 60 caracteres}}</li>
+        </ul>
+      </div>
+      <div class="seg-b">
+        <h3><span class="num">1</span>Segmentos<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="8" r="3.5"/><path d="M3.5 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16.2 4.9a3.5 3.5 0 0 1 0 6.3M18.3 14.7c1.7.9 2.7 2.7 2.7 5.3"/></svg></h3>
+        <ul class="post">
+          <li>{{Segmentos 1 · máx. 60 caracteres}}</li>
+          <li class="m">{{Segmentos 2 · máx. 60 caracteres}}</li>
+          <li class="p">{{Segmentos 3 · máx. 60 caracteres}}</li>
+          <li class="m">{{Segmentos 4 · máx. 60 caracteres}}</li>
+        </ul>
+      </div>
+      <div class="cos">
+        <h3><span class="num">9</span>Estructura de costos<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h14V21l-2.3-1.5L14.4 21l-2.4-1.5L9.6 21l-2.3-1.5L5 21z"/><path d="M9 8h6M9 12h6"/></svg></h3>
+        <ul class="post">
+          <li>{{Estructura de costos 1 · máx. 60 caracteres}}</li>
+          <li>{{Estructura de costos 2 · máx. 60 caracteres}}</li>
+          <li>{{Estructura de costos 3 · máx. 60 caracteres}}</li>
+          <li>{{Estructura de costos 4 · máx. 60 caracteres}}</li>
+        </ul>
+      </div>
+      <div class="ing">
+        <h3><span class="num">5</span>Fuentes de ingreso<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="10" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6.2 12h.01M17.8 12h.01"/></svg></h3>
+        <ul class="post">
+          <li class="m">{{Fuentes de ingreso 1 · máx. 60 caracteres}}</li>
+          <li class="m">{{Fuentes de ingreso 2 · máx. 60 caracteres}}</li>
+          <li class="p">{{Fuentes de ingreso 3 · máx. 60 caracteres}}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+<style>
+  /* Marcas del chequeo: solo en pantalla, nunca en el PDF. */
+  @media screen { [data-falla] { outline: 2px solid #d00 !important; outline-offset: 1px; } }
+</style>
+<script>
+/* Ajuste automático y chequeo de diseño (skill canvas-osterwalder).
+   1. Ajuste: si en una zona del círculo algo se sale del borde, cruza una
+      línea divisoria o no entra, baja la variable --escala de esa zona
+      (hasta 0,62) hasta que entre.
+   2. Chequeo: marca en rojo lo que siga roto y deja el resultado en el
+      atributo data-chequeo del elemento html ("ok" o la lista de problemas),
+      para leerlo con `chrome --headless --dump-dom`.
+   Revisa: bordes y líneas del círculo, letra achicada de más (< 74 %), zonas desbordadas (también las del
+   cuadrado y el BMC), chips de encaje vacíos y campos {{…}} sin completar.
+   En móvil el círculo se apila y no se revisa su geometría. */
+(function () {
+  function rect(el) { return el.getBoundingClientRect(); }
+  function cruza(r, a, b) {
+    var x0 = r.left + 1, x1 = r.right - 1, y0 = r.top + 1, y1 = r.bottom - 1, t0 = 0, t1 = 1;
+    var dx = b[0] - a[0], dy = b[1] - a[1];
+    var p = [-dx, dx, -dy, dy], q = [a[0] - x0, x1 - a[0], a[1] - y0, y1 - a[1]];
+    for (var i = 0; i < 4; i++) {
+      if (p[i] === 0) { if (q[i] < 0) return false; continue; }
+      var t = q[i] / p[i];
+      if (p[i] < 0) { if (t > t1) return false; if (t > t0) t0 = t; }
+      else { if (t < t0) return false; if (t < t1) t1 = t; }
+    }
+    return true;
+  }
+  function geometria(c) {
+    var svg = c.querySelector(".sectores");
+    if (!svg || getComputedStyle(svg).display === "none") return null;
+    var rc = rect(c), esc = rc.width / 100;
+    return {
+      cx: rc.left + rc.width / 2, cy: rc.top + rc.height / 2, R: rc.width / 2,
+      lineas: Array.prototype.map.call(svg.querySelectorAll("line"), function (l) {
+        return [[rc.left + l.x1.baseVal.value * esc, rc.top + l.y1.baseVal.value * esc],
+                [rc.left + l.x2.baseVal.value * esc, rc.top + l.y2.baseVal.value * esc]];
+      })
+    };
+  }
+  function fallaEn(el, g) {
+    var r = rect(el);
+    var esquinas = [[r.left, r.top], [r.right, r.top], [r.left, r.bottom], [r.right, r.bottom]];
+    if (esquinas.some(function (p) { return Math.hypot(p[0] - g.cx, p[1] - g.cy) > g.R - 1; })) return "se sale del círculo";
+    if (g.lineas.some(function (s) { return cruza(r, s[0], s[1]); })) return "cruza una línea del círculo";
+    return null;
+  }
+  function desborda(z) {
+    // En el círculo la zona es un rectángulo posicionado: se mide que el
+    // título y la lista queden adentro.
+    if (z.closest(".circulo")) {
+      var rz = rect(z);
+      return Array.prototype.some.call(z.children, function (h) {
+        var r = rect(h);
+        return r.top < rz.top - 2 || r.bottom > rz.bottom + 2 || r.left < rz.left - 2 || r.right > rz.right + 2;
+      });
+    }
+    return z.scrollHeight > z.clientHeight + 2 || z.scrollWidth > z.clientWidth + 2;
+  }
+  function zonaRota(z, g) {
+    if (desborda(z)) return true;
+    return Array.prototype.some.call(z.querySelectorAll("li, h3"), function (el) { return fallaEn(el, g); });
+  }
+  function ajustar() {
+    document.querySelectorAll(".vpc .circulo").forEach(function (c) {
+      var g = geometria(c);
+      c.querySelectorAll(".zona").forEach(function (z) {
+        z.style.removeProperty("--escala");
+        if (!g) return;
+        var escala = 1;
+        while (zonaRota(z, g) && escala > 0.62) {
+          escala = Math.round((escala - 0.04) * 100) / 100;
+          z.style.setProperty("--escala", escala);
+        }
+      });
+    });
+  }
+  function revisar() {
+    var problemas = [];
+    function marcar(el, motivo) {
+      el.setAttribute("data-falla", motivo);
+      problemas.push(motivo + ": " + (el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 50));
+    }
+    document.querySelectorAll(".vpc .circulo").forEach(function (c) {
+      var g = geometria(c);
+      if (!g) return;
+      c.querySelectorAll(".zona li, .zona h3").forEach(function (el) {
+        var f = fallaEn(el, g);
+        if (f) marcar(el, f);
+      });
+    });
+    document.querySelectorAll(".zona, .bmc > div").forEach(function (z) {
+      if (desborda(z)) marcar(z, "el contenido no entra en la zona");
+    });
+    // Si el ajuste tuvo que achicar mucho la letra, el texto es demasiado largo.
+    document.querySelectorAll(".vpc .circulo .zona").forEach(function (z) {
+      var e = parseFloat(z.style.getPropertyValue("--escala") || "1");
+      if (e < 0.74) marcar(z, "textos demasiado largos (letra al " + Math.round(e * 100) + " %): acortalos");
+    });
+    // Las leyendas (nota al pie, "cómo leer") muestran chips de ejemplo.
+    document.querySelectorAll(".fit:not(.nota .fit):not(.como-leer .fit)").forEach(function (f) {
+      if (!/[A-ZÑ]{1,4}[0-9]+/.test(f.textContent)) marcar(f, "chip de encaje vacío o sin código");
+    });
+    document.querySelectorAll("li, p, h1, h2, h3, td, span, time, div").forEach(function (el) {
+      if (el.children.length === 0 && /\{\{[^}]*\}\}/.test(el.textContent)) marcar(el, "campo sin completar");
+    });
+    document.documentElement.dataset.chequeo = problemas.length ? problemas.join(" | ") : "ok";
+    if (problemas.length && window.console) console.warn("Chequeo de diseño:", problemas);
+  }
+  function correr() {
+    document.querySelectorAll("[data-falla]").forEach(function (el) { el.removeAttribute("data-falla"); });
+    ajustar();
+    revisar();
+  }
+  // El script va al final del <body>: corre ya, al terminar la carga, cuando
+  // llegan las fuentes web, antes de imprimir y al cambiar el tamaño.
+  correr();
+  window.addEventListener("load", correr);
+  window.addEventListener("beforeprint", correr);
+  if (window.matchMedia) window.matchMedia("print").addEventListener("change", correr);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(correr);
+  var espera;
+  window.addEventListener("resize", function () { clearTimeout(espera); espera = setTimeout(correr, 150); });
+})();
+</script>
+
+</body>
+</html>

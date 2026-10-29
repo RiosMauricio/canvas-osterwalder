@@ -23,6 +23,61 @@ Un **solo archivo autocontenido**: CSS y JS inline, sin dependencias externas
 salvo, como mucho, una fuente web. Tiene que abrirse con doble clic en
 cualquier computadora.
 
+### Partir siempre de la plantilla
+
+**No dibujar el Value Proposition Canvas ni el BMC desde cero.** Copiar
+`assets/plantilla-documento.html` (de esta skill) a
+`docs/negocio/visual/canvas.html` y completar los campos `{{…}}`:
+
+- Trae el CSS completo, la hoja del VPC (cuadrado + círculo partido en tres
+  sectores) y la del BMC ya resueltas, más un script de ajuste y chequeo.
+- **No tocar** el bloque de CSS "Círculo del perfil del cliente" ni las
+  posiciones de las zonas: dentro del círculo todo se mide en `cqw` (relativo
+  al ancho del círculo), así la proporción es la misma en pantalla, impresión
+  y móvil. Dibujarlo a mano es lo que produce textos sobre las líneas y
+  post-its fuera del círculo.
+- Límites de texto (indicados en cada campo): trabajos 45 caracteres,
+  frustraciones 48, alegrías 36, productos 60, aliviadores y creadores 50,
+  bloques del BMC 60. Máximo 4 post-its por zona. Si algo no entra,
+  **acortar el texto**; nunca agrandar zonas ni achicar la letra a mano.
+- Un VPC por segmento: duplicar la `<section class="hoja vpc-a">` (cambiar
+  la clase a `vpc-b`…, el color con `seg m`/`seg p` y los códigos).
+- Las demás hojas (cómo funciona, caso de uso, beneficios, competencia,
+  hipótesis) se arman con las clases que ya trae el CSS: `.hu`, `.roles`,
+  `.recorrido`, `.linea`, `.hu-bandas`/`.banda`, `.ben`, `table`,
+  `.declaracion`, `.nota`. El encabezado (`header.cabecera`) va en la hoja 1.
+- Los ajustes de tamaño por hoja van por clase (`section.hoja.vpc-b …`) y con
+  menos especificidad que el bloque del círculo; no pisar los tamaños de
+  `.circulo`.
+
+### Ajuste automático y chequeo
+
+El script al final de la plantilla, al cargar y antes de imprimir:
+
+1. **Ajusta**: si en una zona del círculo algo se sale del borde, cruza una
+   línea divisoria o no entra, achica la letra de esa zona (variable
+   `--escala`, mínimo 62 %).
+2. **Chequea** y deja el resultado en el atributo `data-chequeo` de `<html>`:
+   `"ok"` o la lista de problemas (también los marca en rojo, solo en
+   pantalla). Detecta: post-its o títulos fuera del círculo o sobre las
+   líneas, zonas desbordadas (también en el cuadrado y el BMC), letra
+   achicada de más (< 74 %: hay que acortar textos), chips de encaje vacíos
+   y campos `{{…}}` sin completar.
+
+**No entregar sin `data-chequeo="ok"`** en dos anchos de pantalla:
+
+```bash
+C="<chrome o chromium>"   # en WSL: "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe" con rutas de `wslpath -w`
+for W in 1400 1000; do
+  "$C" --headless --disable-gpu --virtual-time-budget=8000 --window-size=$W,1000 \
+    --user-data-dir="<carpeta temporal>" --dump-dom canvas.html \
+    | grep -o 'data-chequeo="[^"]*"'
+done
+```
+
+Si no dice `ok`, corregir lo que lista (casi siempre: acortar textos) y
+volver a correr. Después exportar el PDF y mirarlo (ver "PDF").
+
 Es el **documento completo de lógica de negocio**: una hoja por pieza, en este
 orden (de lo más fácil de leer a lo más técnico):
 
@@ -84,8 +139,9 @@ que verse diseñado, no como una tabla con colores. Lo que funcionó:
   + "sin respuesta"). Antes de marcar un hueco, verificar que no sea una
   omisión del `.md`.
 - El círculo del perfil es un círculo SVG real partido en tres sectores
-  (trabajos a la derecha, alegrías arriba a la izquierda, frustraciones abajo a la
-  izquierda), con las etiquetas dentro de cada sector, sin tocar los divisores.
+  (trabajos a la derecha, alegrías arriba a la izquierda, frustraciones abajo
+  a la izquierda), con las etiquetas dentro de cada sector, sin tocar los
+  divisores. Ya viene resuelto en la plantilla.
 - Orden de lectura marcado sin invertir el lienzo (el estándar es cuadrado a
   la izquierda, círculo a la derecha): números ① "Empezá acá · Perfil del
   cliente" sobre el círculo y ② "Mapa de valor · lo que hace <proyecto>" sobre
@@ -108,9 +164,8 @@ Diseño técnico:
   primera sección, porque deja el encabezado solo en la hoja 1. En impresión,
   usar un encabezado compacto en una línea y achicar también las etiquetas
   chicas (supuesto, roadmap), no solo el texto de los post-its.
-- El círculo del VPC (`border-radius: 50%`) necesita un margen interno de
-  ~8 % para que los post-its de las esquinas no se salgan del borde. Si la
-  sección no entra en una hoja, reducir espacios antes que ese margen.
+- Si la hoja del VPC no entra en una página, reducir espacios fuera del
+  círculo (encabezado, nota, declaración); el círculo no se toca.
 - Pie con el crédito: "Business Model Canvas y Value Proposition Canvas:
   Strategyzer, CC BY-SA 3.0".
 
@@ -142,6 +197,7 @@ Después de exportar, verificar:
 - Los ajustes de impresión por hoja van por clase (`section.hoja.bmc`), no
   por posición (`nth-of-type`): al agregar o reordenar hojas, los selectores
   por posición apuntan a la hoja equivocada.
+- Que `data-chequeo` diga `ok` (ver "Ajuste automático y chequeo").
 - Si hay forma de rasterizar el PDF (PyMuPDF, `pdftoppm`), mirar las hojas.
 - Para ver la vista móvil, no confiar en `--window-size` chico: Chrome tiene
   un ancho mínimo de ventana. Capturar un marco con un `<iframe>` de 375 px.

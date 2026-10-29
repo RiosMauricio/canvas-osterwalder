@@ -52,6 +52,7 @@ references/value-proposition-canvas.md   perfil del cliente, mapa de valor, enca
 references/business-model-canvas.md      9 bloques, competencia, patrones, validación de hipótesis
 references/documento-beneficios.md       beneficios por segmento, reglas i18n, formato
 references/version-visual.md             documento completo en HTML, exportación a PDF y diapositivas
+assets/plantilla-documento.html          plantilla probada del VPC y el BMC, con ajuste automático y chequeo
 ```
 
 ## Créditos
