@@ -111,8 +111,13 @@ orden (de lo más fácil de leer a lo más técnico):
    - Fila inferior de 2 columnas: estructura de costos · fuentes de ingreso.
    - Cada ítem como un "post-it" breve, coloreado según su segmento.
 6. **Competencia**: tabla tipo (directa/indirecta) · alternativa · qué cubre ·
-   qué no cubre, y el diferencial destacado debajo.
+   qué no cubre, y el diferencial destacado debajo. Al lado o debajo, las 5
+   fuerzas como fila de 5 chips (baja / media / alta) y la barrera principal.
 7. **Hipótesis**: tabla compacta (hipótesis, tipo, experimento, criterio).
+8. **Diagnóstico**: el veredicto (🟢 / 🟡 / 🔴) grande arriba, el semáforo
+   como tabla compacta (pregunta · estado · porqué) y las 3 alertas con su
+   acción de esta semana. Es la hoja que más se mira: no esconderla al final
+   si el usuario la quiere primero.
 
 Calidad visual: el resultado se muestra a jurados e inversores, así que tiene
 que verse diseñado, no como una tabla con colores. Lo que funcionó:
@@ -192,7 +197,7 @@ Exportar `canvas.html` con lo que haya disponible, en este orden:
 Después de exportar, verificar:
 
 - Que el PDF exista y tenga **una hoja por sección** (cómo funciona, caso de uso,
-  beneficios, VPC por segmento, BMC, competencia, hipótesis). Más hojas
+  beneficios, VPC por segmento, BMC, competencia, hipótesis, diagnóstico). Más hojas
   indican desbordes o la vista móvil aplicada al imprimir.
 - Los ajustes de impresión por hoja van por clase (`section.hoja.bmc`), no
   por posición (`nth-of-type`): al agregar o reordenar hojas, los selectores

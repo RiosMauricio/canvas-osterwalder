@@ -40,6 +40,26 @@ Columnas: tipo · alternativa · qué cubre · qué no cubre. Cerrar con el
 **diferencial**: revisar qué funciones ya hace lo que el cliente tiene (p. ej.
 un ERP ya avisa por punto de reorden) y no presentarlas como diferencial.
 
+### Qué tan defendible es (5 fuerzas de Porter, resumidas)
+
+Después de la tabla, responder estas cinco preguntas en una línea cada una,
+con la fuerza como **baja / media / alta** (alta = mala para el proyecto) y el
+porqué. No hace falta el análisis completo de Porter: alcanza con esto.
+
+| Fuerza | Pregunta | Es alta cuando… |
+|---|---|---|
+| Nuevos entrantes | ¿Qué impide que alguien lo copie en un mes? | Basta con saber programar: no hay datos propios, red de usuarios, licencias ni contratos |
+| Proveedores | ¿De quién dependemos? | Una sola API, plataforma o fuente de datos puede subir el precio, cambiar reglas o cortar el acceso |
+| Clientes | ¿El cliente puede imponer precio o irse sin costo? | Son pocos y grandes, o cambiarse a otra cosa no les cuesta nada |
+| Sustitutos | ¿Qué usa hoy en su lugar? | Excel, hacerlo a mano o "no hacer nada" le alcanzan |
+| Rivalidad | ¿Cuántos hacen lo mismo y cómo compiten? | Muchos, y se compite por precio o gratis |
+
+Cerrar con **la barrera principal**: lo que hace difícil copiar el proyecto
+(datos acumulados, efecto red, integración con el cliente, conocimiento del
+rubro, contratos). Si no hay ninguna, decirlo: es un hallazgo para el
+diagnóstico, no algo para disimular. Cada fuerza **alta** pasa como alerta a
+`references/diagnostico.md`.
+
 ## Patrones de modelo de negocio
 
 Si aplica, indicá qué patrón(es) de *Business Model Generation* sigue el proyecto y qué implica:
